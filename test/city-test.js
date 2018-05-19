@@ -16,6 +16,10 @@ describe('city.js', () => {
       c.corn.should.be.equal(100);
       c.gold.should.be.equal(100);
     });
+
+    it('should have 100000 points of life', () => {
+      c.life.should.be.equal(100000);
+    });
   });
 
   describe('Create soldier', () => {
@@ -95,6 +99,61 @@ describe('city.js', () => {
       c.createSoldier();
       c.soldiers_['0'].hurt();
       c.power().should.be.equal(100);
+    });
+  });
+
+  describe('Attack', () => {
+    let c1;
+    let c2;
+    beforeEach(() => {
+      c1 = new City('c1', 1);
+      c2 = new City('c2', 1);
+    });
+
+    afterEach(() => {
+      c1.endWorld();
+      c2.endWorld();
+    });
+
+    it('attack < defense', async () => {
+      c1.createSoldier();
+      c1.life.should.be.equal(100000);
+      await c1.defense(200, 0);
+      c1.life.should.be.equal(100000);
+    });
+
+    it('attack > defense', async () => {
+      c1.life.should.be.equal(100000);
+      await c1.defense(500, 0);
+      c1.life.should.be.equal(99500);
+    });
+
+    it('attack 1 vs 1', async () => {
+      c1.createSoldier();
+      c2.createSoldier();
+      await c2.attack(c1);
+      c1.soldiers_['0'].isHurt.should.be.equal(true);
+      if (c2.soldiers_['0']) {
+        c2.soldiers_['0'].isHurt.should.be.equal(true);
+      } else {
+        Object.keys(c2.soldiers_).length.should.be.equal(0);
+      }
+      c1.life.should.be.equal(100000);
+    });
+
+    it('attack 2 vs 1', async () => {
+      c1.createSoldier();
+      c2.createSoldier();
+      c2.createSoldier();
+      await c2.attack(c1);
+      c1.soldiers_['0'].isHurt.should.be.equal(true);
+      if (c2.soldiers_['0']) {
+        c2.soldiers_['0'].isHurt.should.be.equal(true);
+      } else {
+        Object.keys(c2.soldiers_).length.should.be.equal(1);
+      }
+      c2.soldiers_['1'].isHurt.should.be.equal(false);
+      c1.life.should.be.equal(99800);
     });
   });
 

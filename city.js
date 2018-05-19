@@ -13,7 +13,7 @@ class City {
     this.soldiers_ = {};
     this.sId_ = 0;
     this.divinity = new Divinity('div', this.timeFactor_);
-    this.life = 100000;
+    this.life_ = 100000;
   }
 
   init() {
@@ -78,38 +78,44 @@ class City {
   }
 
   defense(attack, valids) {
-    if (attack > this.power()) {
-      this.life -= attack - this.power();
-    }
-    let attackBack = 0;
-    for (const s in this.soldiers_) {
-      if (valids > 0 && !this.soldiers_[s].isHurt) {
-        this.soldiers_[s].hurt();
-        attackBack++;
-        valids--;
+    return new Promise(resolve => {
+      if (attack > this.power()) {
+        this.life_ -= attack - this.power();
       }
-    }
-    return attackBack;
+      let attackBack = 0;
+      for (const s in this.soldiers_) {
+        if (valids > 0 && !this.soldiers_[s].isHurt) {
+          this.soldiers_[s].hurt();
+          attackBack++;
+          valids--;
+        }
+      }
+      resolve(attackBack);
+    });
   }
 
   attack(otherCity) {
-    let valids = 0;
-    for (const s in this.soldiers_) {
-      if (this.soldiers_[s].isAlive && !this.soldiers_[s].isHurt) {
-        valids++;
-      }
-    }
-    let attackBack = otherCity.defense(this.power(), valids);
-    for (const s in this.soldiers_) {
-      if (attackBack > 0 && !this.soldiers_[s].isHurt) {
-        if (Math.random() < 0.80) {
-          this.soldiers_[s].hurt();
-        } else {
-          this.soldiers_[s].kill();
+    return new Promise(resolve => {
+      let valids = 0;
+      for (const s in this.soldiers_) {
+        if (this.soldiers_[s].isAlive && !this.soldiers_[s].isHurt) {
+          valids++;
         }
-        attackBack--;
       }
-    }
+      otherCity.defense(this.power(), valids).then(attackBack => {
+        for (const s in this.soldiers_) {
+          if (attackBack > 0 && !this.soldiers_[s].isHurt) {
+            if (Math.random() < 0.80) {
+              this.soldiers_[s].hurt();
+            } else {
+              this.soldiers_[s].kill();
+            }
+            attackBack--;
+          }
+        }
+        resolve();
+      });
+    });
   }
 
   get corn() {
@@ -118,6 +124,10 @@ class City {
 
   get gold() {
     return this.gold_;
+  }
+
+  get life() {
+    return this.life_;
   }
 
   get worldEvents() {
