@@ -27,7 +27,7 @@ class City {
       this.corn_ += favor.corn;
     });
     this.divinity.worldEvents.on('retribution', retribution => {
-      defense(retribution);
+      this.defense(retribution);
     });
   }
 
@@ -36,6 +36,9 @@ class City {
       this.corn_ -= 10;
       this.gold_ -= 10;
       const s = new Soldier((this.sId_++).toString(), this.timeFactor_);
+      s.worldEvents.on('die', () => {
+        delete this.soldiers_[s.name];
+      });
       s.init();
       this.soldiers_[s.name] = s;
       return true;
@@ -61,20 +64,52 @@ class City {
         });
         t.trade();
       } else {
-        reject();
+        reject(new Error('not enough resources'));
       }
     });
   }
 
   power() {
     let power = 0;
-    for (let s in this.soldiers_) {
-      power += this.soldiers_[s].isAlive()*2 + this.so;
+    for (const s in this.soldiers_) {
+      power += 100 + (!this.soldiers_[s].isHurt * 100);
     }
+    return power;
   }
 
-  defense(power) {
-    if(power > )
+  defense(attack, valids) {
+    if (attack > this.power()) {
+      this.life -= attack - this.power();
+    }
+    let attackBack = 0;
+    for (const s in this.soldiers_) {
+      if (valids > 0 && !this.soldiers_[s].isHurt) {
+        this.soldiers_[s].hurt();
+        attackBack++;
+        valids--;
+      }
+    }
+    return attackBack;
+  }
+
+  attack(otherCity) {
+    let valids = 0;
+    for (const s in this.soldiers_) {
+      if (this.soldiers_[s].isAlive && !this.soldiers_[s].isHurt) {
+        valids++;
+      }
+    }
+    let attackBack = otherCity.defense(this.power(), valids);
+    for (const s in this.soldiers_) {
+      if (attackBack > 0 && !this.soldiers_[s].isHurt) {
+        if (Math.random() < 0.80) {
+          this.soldiers_[s].hurt();
+        } else {
+          this.soldiers_[s].kill();
+        }
+        attackBack--;
+      }
+    }
   }
 
   get corn() {
@@ -99,6 +134,9 @@ class City {
 
   endWorld() {
     this.divinity.endWorld();
+    for (const s in this.soldiers_) {
+      this.soldiers_[s].endWorld();
+    }
   }
 }
 

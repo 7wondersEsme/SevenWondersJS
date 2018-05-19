@@ -37,6 +37,7 @@ describe('city.js', () => {
       c.createSoldier().should.be.equal(false);
       c.gold.should.be.equal(0);
       c.corn.should.be.equal(100);
+      Object.keys(c.soldiers_).length.should.be.equal(0);
     });
 
     it('shouldn\'t create soldier without enough corn', () => {
@@ -44,6 +45,56 @@ describe('city.js', () => {
       c.createSoldier().should.be.equal(false);
       c.gold.should.be.equal(100);
       c.corn.should.be.equal(0);
+      Object.keys(c.soldiers_).length.should.be.equal(0);
+    });
+
+    it('should delete soldier on death', async () => {
+      c.createSoldier().should.be.equal(true);
+      Object.keys(c.soldiers_).length.should.be.equal(1);
+      await new Promise(resolve => {
+        c.soldiers_['0'].worldEvents.on('die', () => {
+          Object.keys(c.soldiers_).length.should.be.equal(0);
+          resolve();
+        });
+      });
+    });
+  });
+
+  describe('Soldier actions', () => {
+    let c;
+    beforeEach(() => {
+      c = new City('test', 1);
+    });
+
+    afterEach(() => {
+      c.endWorld();
+    });
+
+    it('should have no power', async () => {
+      c.power().should.be.equal(0);
+    });
+
+    it('should have power', async () => {
+      c.createSoldier();
+      c.power().should.be.equal(200);
+    });
+
+    it('should have no power on soldier death', async () => {
+      c.createSoldier();
+      c.power().should.be.equal(200);
+      Object.keys(c.soldiers_).length.should.be.equal(1);
+      await new Promise(resolve => {
+        c.soldiers_['0'].worldEvents.on('die', () => {
+          c.power().should.be.equal(0);
+          resolve();
+        });
+      });
+    });
+
+    it('should have half power when hurt', () => {
+      c.createSoldier();
+      c.soldiers_['0'].hurt();
+      c.power().should.be.equal(100);
     });
   });
 
