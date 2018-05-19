@@ -60,18 +60,18 @@ describe('city.js', () => {
       c.corn.should.be.equal(110);
     });
 
-    it('shouldn\'t create soldier without enough gold', () => {
-      c.gold_ = 0;
-      c.createSoldier().should.be.equal(false);
-      c.gold.should.be.equal(0);
+    it('shouldn\'t create trader without enough gold', async () => {
+      await c.sendTrader(100, 'gold').should.be.rejectedWith(
+        Error, 'not enough resources');
+      c.gold.should.be.equal(100);
       c.corn.should.be.equal(100);
     });
 
-    it('shouldn\'t create soldier without enough corn', () => {
-      c.corn_ = 0;
-      c.createSoldier().should.be.equal(false);
+    it('shouldn\'t create soldier without enough corn', async () => {
+      await c.sendTrader(100, 'corn').should.be.rejectedWith(
+        Error, 'not enough resources');
       c.gold.should.be.equal(100);
-      c.corn.should.be.equal(0);
+      c.corn.should.be.equal(100);
     });
   });
 });
