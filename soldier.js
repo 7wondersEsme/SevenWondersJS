@@ -14,15 +14,18 @@ class Soldier {
     this.gaiaInterval_ = setInterval(() => {
       this.age_++;
       if (!this.alive_ || Math.random() > 1 - ((this.age_ - 30) / 100.0)) {
-        this.alive_ = false;
-        this.worldEvents_.emit('die', this);
-        this.endWorld();
+        this.kill();
       }
     }, this.timeFactor);
   }
 
   hurt() {
     this.hurt_ = true;
+  }
+
+  kill() {
+    this.worldEvents_.emit('die');
+    this.endWorld();
   }
 
   get isHurt() {
