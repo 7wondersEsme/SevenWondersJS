@@ -1,81 +1,59 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
-const {Divinity} = require('../divinity');
+const {Soldier} = require('../soldier');
 
 chai.use(chaiAsPromised);
 chai.should();
 
-describe('divinity.js', () => {
-  describe('worldEvents', () => {
-    let g;
-
-    before(() => {
-      g = new Divinity('test', 1);
-      g.init();
+describe('soldier.js', () => {
+  describe('Soldier', () => {
+    let s;
+    beforeEach(() => {
+      s = new Soldier('test', 1);
     });
 
-    after(() => {
-      g.endWorld();
+    afterEach(() => {
+      s.endWorld();
     });
 
-    it('should have emitted favor', async () => {
+    it('should be alive', async () => {
+      s.isAlive.should.be.equal(true);
+    });
+
+    it('should die', async () => {
+      s.isAlive.should.be.equal(true);
+      s.init();
       await new Promise(resolve => {
-        g.worldEvents.on('favor', favor => {
-          favor.corn.should.be.equal(0);
-          favor.gold.should.be.equal(0);
+        s.worldEvents.on('die', () => {
           resolve();
         });
       });
+      s.isAlive.should.be.equal(false);
     });
 
-    it('should have emitted blessed', async () => {
-      await new Promise(resolve => {
-        g.worldEvents.on('blessing', blessing => {
-          blessing.corn.should.be.equal(0);
-          blessing.gold.should.be.equal(0);
-          resolve();
-        });
-      });
+    it('should hurt soldier', async () => {
+      s.isHurt.should.be.equal(false);
+
+      s.hurt();
+      s.isHurt.should.be.equal(true);
     });
 
-    it('should have emitted retribution', async () => {
-      await new Promise(resolve => {
-        g.worldEvents.on('retribution', retribution => {
-          retribution.should.be.above(-1);
-          retribution.should.be.below(10000);
-          resolve();
-        });
+    it('should kill soldier', async () => {
+      s.isAlive.should.be.equal(true);
+      s.endWorld();
+      s.isAlive.should.be.equal(false);
+    });
+
+    it('should emit event when soldier killed', async () => {
+      s.isAlive.should.be.equal(true);
+      s.worldEvents.on('die', () => {
+        s.isAlive.should.be.equal(false);
       });
+      s.endWorld();
     });
   });
 
-  describe('Divinity', () => {
-    let g;
-    before(() => {
-      g = new Divinity('test', 1);
-    });
-
-    after(() => {
-      g.endWorld();
-    });
-
-    it('should update divinity\'s corn', async () => {
-      g.corn.should.be.equal(0);
-
-      await g.offeringCorn(100);
-      g.corn.should.be.equal(100);
-
-      await g.offeringCorn(1000);
-      g.corn.should.be.equal(1100);
-
-      await g.offeringCorn(-1);
-      g.corn.should.be.equal(0);
-
-      await (g.offeringCorn('aze')).should.be.rejectedWith(Error,
-        /You didn't gave a number of corn to \b[a-zA-Z].*, Earth collapsed/);
-    });
-
-    it('should update divinity\'s gold', async () => {
+/*    It('should update divinity\'s gold', async () => {
       g.gold.should.be.equal(0);
 
       await g.offeringGold(100);
@@ -136,5 +114,5 @@ describe('divinity.js', () => {
         });
       });
     });
-  });
+  }); */
 });
