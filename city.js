@@ -8,7 +8,8 @@ class City {
     this.gold_ = 100;
     this.worldEvents_ = new EventEmitter();
     this.timeFactor_ = timeFactor || 1000;
-    this.soldiers = {};
+    this.soldiers_ = {};
+    this.sId_ = 0;
   }
 
   init() {
@@ -17,12 +18,14 @@ class City {
   }
 
   createSoldier() {
-    if(this.corn_ >= 100 && this.gold_ >= 100) {
+    if (this.corn_ >= 100 && this.gold_ >= 100) {
       this.corn_ -= 100;
       this.gold_ -= 100;
-      let s = new Soldier('s', this.timeFactor_);
-      this.soldiers['s'] = s;
+      const s = new Soldier((this.sId_++).toString(), this.timeFactor_);
+      this.soldiers_[s.name] = s;
+      return true;
     }
+    return false;
   }
 
   get corn() {
