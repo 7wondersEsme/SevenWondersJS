@@ -1,26 +1,17 @@
 class Trader {
-  constructor(name, timeFactor) {
+  constructor(name, amount, type, timeFactor) {
     this.given_ = 0;
-    this.taken_ = 0;
-    this.type_ = 'gold';
+    this.taken_ = amount;
+    this.type_ = type;
     this.timeFactor = timeFactor;
   }
 
-  give(amount, type) {
-    this.type_ = type;
-    this.taken_ = amount;
-  }
-
   trade() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       setTimeout(() => {
-        if (this.taken_ === 0) {
-          reject(new Error('Trade already done'));
-        } else {
-          this.given_ = Math.floor(this.taken_ * 1.1);
-          this.taken_ = 0;
-          resolve();
-        }
+        this.given_ = Math.floor(this.taken_ * 1.1);
+        this.taken_ = 0;
+        resolve();
       }, this.timeFactor * 10);
     });
   }
