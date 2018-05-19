@@ -1,9 +1,12 @@
+const EventEmitter = require('events');
+
 class Trader {
   constructor(name, amount, type, timeFactor) {
     this.given_ = 0;
     this.taken_ = amount;
     this.type_ = type;
     this.timeFactor = timeFactor;
+    this.worldEvents_ = new EventEmitter();
   }
 
   trade() {
@@ -11,6 +14,7 @@ class Trader {
       setTimeout(() => {
         this.given_ = Math.floor(this.taken_ * 1.1);
         this.taken_ = 0;
+        this.worldEvents_.emit('trade', {type: this.type, amount: this.given_});
         resolve();
       }, this.timeFactor * 10);
     });

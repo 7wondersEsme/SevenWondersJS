@@ -30,5 +30,17 @@ describe('trader.js', () => {
       t.taken.should.be.equal(0);
       t.given.should.be.equal(110);
     });
+
+    it('should emit event', async () => {
+      t.taken.should.be.equal(100);
+      await new Promise(resolve => {
+        t.worldEvents.on('trade', r => {
+          r.amount.should.be.equal(110);
+          resolve();
+        });
+      });
+      t.taken.should.be.equal(0);
+      t.given.should.be.equal(110);
+    });
   });
 });
