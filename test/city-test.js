@@ -204,4 +204,25 @@ describe('city.js', () => {
       c.corn.should.be.equal(0);
     });
   });
+
+  describe('Offering', () => {
+    let c;
+    beforeEach(() => {
+      c = new City('c', 1);
+    });
+
+    afterEach(() => {
+      c.endWorld();
+    });
+
+    it('should offer 100 gold', async () => {
+      await c.offer(100, 'gold');
+      c.divinity.gold.should.be.equal(100);
+    });
+
+    it('should offer 100 corn', async () => {
+      await c.offer(100, 'corn');
+      c.divinity.corn.should.be.equal(100);
+    });
+  });
 });

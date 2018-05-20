@@ -12,23 +12,30 @@ class City {
     this.timeFactor_ = timeFactor || 1000;
     this.soldiers_ = {};
     this.sId_ = 0;
-    this.divinity = new Divinity('div', this.timeFactor_);
+    this.divinity_ = new Divinity('div', this.timeFactor_);
     this.life_ = 100000;
   }
 
   init() {
-    this.divinity.init();
-    this.divinity.worldEvents.on('favor', favor => {
+    this.divinity_.init();
+    this.divinity_.worldEvents.on('favor', favor => {
       this.gold_ += favor.gold;
       this.corn_ += favor.corn;
     });
-    this.divinity.worldEvents.on('blessing', favor => {
+    this.divinity_.worldEvents.on('blessing', favor => {
       this.gold_ += favor.gold;
       this.corn_ += favor.corn;
     });
-    this.divinity.worldEvents.on('retribution', retribution => {
+    this.divinity_.worldEvents.on('retribution', retribution => {
       this.defense(retribution, 0);
     });
+  }
+
+  offer(amount, type) {
+    if (type === 'gold') {
+      return this.divinity_.offeringGold(amount);
+    }
+    return this.divinity_.offeringCorn(amount);
   }
 
   createSoldier() {
@@ -72,7 +79,9 @@ class City {
   power() {
     let power = 0;
     for (const s in this.soldiers_) {
-      power += 100 + (!this.soldiers_[s].isHurt * 100);
+      if (Object.prototype.hasOwnProperty.call(this, 'soldiers_')) {
+        power += 100 + (!this.soldiers_[s].isHurt * 100);
+      }
     }
     return power;
   }
@@ -84,10 +93,12 @@ class City {
       }
       let attackBack = 0;
       for (const s in this.soldiers_) {
-        if (valids > 0 && !this.soldiers_[s].isHurt) {
-          this.soldiers_[s].hurt();
-          attackBack++;
-          valids--;
+        if (Object.prototype.hasOwnProperty.call(this, 'soldiers_')) {
+          if (valids > 0 && !this.soldiers_[s].isHurt) {
+            this.soldiers_[s].hurt();
+            attackBack++;
+            valids--;
+          }
         }
       }
       resolve(attackBack);
@@ -98,19 +109,23 @@ class City {
     return new Promise(resolve => {
       let valids = 0;
       for (const s in this.soldiers_) {
-        if (this.soldiers_[s].isAlive && !this.soldiers_[s].isHurt) {
-          valids++;
+        if (Object.prototype.hasOwnProperty.call(this, 'soldiers_')) {
+          if (this.soldiers_[s].isAlive && !this.soldiers_[s].isHurt) {
+            valids++;
+          }
         }
       }
       otherCity.defense(this.power(), valids).then(attackBack => {
         for (const s in this.soldiers_) {
-          if (attackBack > 0 && !this.soldiers_[s].isHurt) {
-            if (Math.random() < 0.80) {
-              this.soldiers_[s].hurt();
-            } else {
-              this.soldiers_[s].kill();
+          if (Object.prototype.hasOwnProperty.call(this, 'soldiers_')) {
+            if (attackBack > 0 && !this.soldiers_[s].isHurt) {
+              if (Math.random() < 0.80) {
+                this.soldiers_[s].hurt();
+              } else {
+                this.soldiers_[s].kill();
+              }
+              attackBack--;
             }
-            attackBack--;
           }
         }
         resolve();
@@ -125,11 +140,17 @@ class City {
   get hurts() {
     let count_ = 0;
     for (const s in this.soldiers_) {
-      if (this.soldiers_[s].isHurt) {
-        count_++;
+      if (Object.prototype.hasOwnProperty.call(this, 'soldiers_')) {
+        if (this.soldiers_[s].isHurt) {
+          count_++;
+        }
       }
     }
     return count_;
+  }
+
+  get divinity() {
+    return this.divinity_;
   }
 
   get corn() {
@@ -157,9 +178,11 @@ class City {
   }
 
   endWorld() {
-    this.divinity.endWorld();
+    this.divinity_.endWorld();
     for (const s in this.soldiers_) {
-      this.soldiers_[s].endWorld();
+      if (Object.prototype.hasOwnProperty.call(this, 'soldiers_')) {
+        this.soldiers_[s].endWorld();
+      }
     }
   }
 }

@@ -16,8 +16,7 @@
         "error",
         80,
         2
-      ],
-      "guard-for-in": 0
+      ]
     },
     "ignores": [
       "Gruntfile.js"
