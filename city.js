@@ -28,6 +28,9 @@ class City {
     });
     this.divinity_.worldEvents.on('retribution', retribution => {
       this.defense(retribution, 0);
+      if (this.life_ < 0) {
+        this.worldEvents_.emit('burned');
+      }
     });
   }
 
@@ -54,7 +57,7 @@ class City {
   }
 
   sendTrader(amount, type, ennemies) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       const g = type === 'gold' ? amount : 0;
       const c = type === 'corn' ? amount : 0;
       if (this.corn_ >= 100 + c && this.gold_ >= 100 + g) {
@@ -71,7 +74,7 @@ class City {
         });
         t.trade(this.alives, ennemies);
       } else {
-        reject(new Error('not enough resources'));
+        resolve();
       }
     });
   }
@@ -90,6 +93,9 @@ class City {
     return new Promise(resolve => {
       if (attack > this.power()) {
         this.life_ -= attack - this.power();
+      }
+      if (this.life_ < 0) {
+        this.worldEvents_.emit('burned');
       }
       let attackBack = 0;
       for (const s in this.soldiers_) {

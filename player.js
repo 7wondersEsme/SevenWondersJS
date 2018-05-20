@@ -1,14 +1,22 @@
+const EventEmitter = require('events');
 const {City} = require('./city');
 
 class Player {
   constructor(name, timeFactor) {
     this.name_ = name;
+    this.worldEvents_ = new EventEmitter();
     this.timeFactor_ = timeFactor || 1000;
     this.city_ = new City(name, this.timeFactor_);
+    this.onGame_ = true;
   }
 
   init() {
     this.city_.init();
+    this.city_.worldEvents.on('burned', () => {
+      this.onGame_ = false;
+      this.worldEvents_.emit('lost');
+      this.endWorld();
+    });
   }
 
   createArmy() {
@@ -26,7 +34,7 @@ class Player {
   }
 
   offer(type) {
-    return this.city_.offering(100, type);
+    return this.city_.offer(100, type);
   }
 
   stats() {
@@ -45,6 +53,14 @@ class Player {
 
   get name() {
     return this.name_;
+  }
+
+  get worldEvents() {
+    return this.worldEvents_;
+  }
+
+  get onGame() {
+    return this.onGame_;
   }
 
   endWorld() {
