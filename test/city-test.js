@@ -34,6 +34,7 @@ describe('city.js', () => {
       c.gold.should.be.equal(80);
       c.corn.should.be.equal(80);
       Object.keys(c.soldiers_).length.should.be.equal(2);
+      c.alives.should.be.equal(2);
     });
 
     it('shouldn\'t create soldier without enough gold', () => {
@@ -42,6 +43,7 @@ describe('city.js', () => {
       c.gold.should.be.equal(0);
       c.corn.should.be.equal(100);
       Object.keys(c.soldiers_).length.should.be.equal(0);
+      c.alives.should.be.equal(0);
     });
 
     it('shouldn\'t create soldier without enough corn', () => {
@@ -50,6 +52,7 @@ describe('city.js', () => {
       c.gold.should.be.equal(100);
       c.corn.should.be.equal(0);
       Object.keys(c.soldiers_).length.should.be.equal(0);
+      c.alives.should.be.equal(0);
     });
 
     it('should delete soldier on death', async () => {
@@ -58,6 +61,7 @@ describe('city.js', () => {
       await new Promise(resolve => {
         c.soldiers_['0'].worldEvents.on('die', () => {
           Object.keys(c.soldiers_).length.should.be.equal(0);
+          c.alives.should.be.equal(0);
           resolve();
         });
       });
@@ -99,6 +103,8 @@ describe('city.js', () => {
       c.createSoldier();
       c.soldiers_['0'].hurt();
       c.power().should.be.equal(100);
+      c.alives.should.be.equal(1);
+      c.hurts.should.be.equal(1);
     });
   });
 
@@ -159,29 +165,43 @@ describe('city.js', () => {
 
   describe('Create trader', () => {
     let c;
+    let c2;
     beforeEach(() => {
       c = new City('test', 1);
+      c2 = new City('c2', 1);
     });
 
     it('should send a trader', async () => {
       c.gold_ = 200;
-      await c.sendTrader(100, 'gold');
+      await c.sendTrader(100, 'gold', 0);
       c.gold.should.be.equal(0);
       c.corn.should.be.equal(110);
     });
 
     it('shouldn\'t create trader without enough gold', async () => {
-      await c.sendTrader(100, 'gold').should.be.rejectedWith(
+      await c.sendTrader(100, 'gold', 0).should.be.rejectedWith(
         Error, 'not enough resources');
       c.gold.should.be.equal(100);
       c.corn.should.be.equal(100);
     });
 
     it('shouldn\'t create soldier without enough corn', async () => {
-      await c.sendTrader(100, 'corn').should.be.rejectedWith(
+      await c.sendTrader(100, 'corn', 0).should.be.rejectedWith(
         Error, 'not enough resources');
       c.gold.should.be.equal(100);
       c.corn.should.be.equal(100);
+    });
+
+    it('should attack trader', async () => {
+      c2.gold_ = 1000;
+      c2.corn_ = 100;
+      for (let i = 0; i < 100; i++) {
+        c2.createSoldier();
+      }
+      c.gold_ = 200;
+      await c.sendTrader(100, 'gold', c2.alives);
+      c.gold.should.be.equal(0);
+      c.corn.should.be.equal(0);
     });
   });
 });

@@ -46,7 +46,7 @@ class City {
     return false;
   }
 
-  sendTrader(amount, type) {
+  sendTrader(amount, type, ennemies) {
     return new Promise((resolve, reject) => {
       const g = type === 'gold' ? amount : 0;
       const c = type === 'corn' ? amount : 0;
@@ -62,7 +62,7 @@ class City {
           }
           resolve();
         });
-        t.trade();
+        t.trade(this.alives, ennemies);
       } else {
         reject(new Error('not enough resources'));
       }
@@ -116,6 +116,20 @@ class City {
         resolve();
       });
     });
+  }
+
+  get alives() {
+    return Object.keys(this.soldiers_).length;
+  }
+
+  get hurts() {
+    let count_ = 0;
+    for (const s in this.soldiers_) {
+      if (this.soldiers_[s].isHurt) {
+        count_++;
+      }
+    }
+    return count_;
   }
 
   get corn() {

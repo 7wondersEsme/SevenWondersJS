@@ -9,12 +9,17 @@ class Trader {
     this.worldEvents_ = new EventEmitter();
   }
 
-  trade() {
+  trade(protection, ennemies) {
     return new Promise(resolve => {
       setTimeout(() => {
         this.given_ = Math.floor(this.taken_ * 1.1);
         this.taken_ = 0;
-        this.worldEvents_.emit('trade', {type: this.type, amount: this.given_});
+        if (Math.random() < ennemies / (1 + (100 * protection))) {
+          this.given_ = 0;
+        }
+        this.worldEvents_.emit('trade', {
+          type: this.type, amount: this.given_
+        });
         resolve();
       }, this.timeFactor * 10);
     });
