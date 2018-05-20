@@ -27,7 +27,7 @@ class City {
       this.corn_ += favor.corn;
     });
     this.divinity.worldEvents.on('retribution', retribution => {
-      this.defense(retribution);
+      this.defense(retribution, 0);
     });
   }
 
