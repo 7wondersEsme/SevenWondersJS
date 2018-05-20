@@ -35,8 +35,8 @@ describe('player.js', () => {
     it('should return stats', () => {
       p.stats().gold.should.be.equal(100);
       p.stats().corn.should.be.equal(100);
-      p.stats().soldiers.alives.should.be.equal(0);
-      p.stats().soldiers.hurts.should.be.equal(0);
+      p.stats().alives.should.be.equal(0);
+      p.stats().hurts.should.be.equal(0);
       p.stats().life.should.be.equal(100000);
     });
   });
