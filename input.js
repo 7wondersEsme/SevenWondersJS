@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const readline = require('readline');
 
-class Commands {
+class Input {
   constructor() {
     this.rl_ = readline.createInterface(process.stdin, process.stdout);
   }
@@ -9,26 +9,28 @@ class Commands {
   prompt(player) {
     const actions = [
       'Create army',
-      'Send trader',
-      'Offer',
+      'Send trader with gold',
+      'Send trader with corn',
+      'Offer gold',
+      'Offer corn',
       'Attack'
     ];
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
+      let timeout = 0;
       const handleAnswer = line => {
-        if (line.match(/^[0123]$/)) {
+        if (line.match(/^[012345]$/)) {
+          clearTimeout(timeout);
           this.rl_.removeListener('line', handleAnswer);
-          this.rl_.close();
           resolve(line);
         } else {
           console.log('Enter a correct action');
         }
       };
-      setTimeout(() => {
+      timeout = setTimeout(() => {
         this.rl_.removeListener('line', handleAnswer);
-        this.rl_.close();
-        reject(new Error('Next player'));
-      }, 5000);
-      console.log(player.name);
+        resolve();
+      }, 15000);
+      console.log('----- ' + player.name + ' ------');
       const stats = player.stats();
       for (const s in stats) {
         if (Object.prototype.hasOwnProperty.call(stats, s)) {
@@ -40,10 +42,14 @@ class Commands {
         console.log(i.toString() + ': ' + actions[i]);
       }
       this.rl_.setPrompt('Choice: ');
-      this.rl_.prompt();
       this.rl_.on('line', handleAnswer);
+      this.rl_.prompt();
     });
+  }
+
+  close() {
+    this.rl_.close();
   }
 }
 
-module.exports = {Commands};
+module.exports = {Input};
