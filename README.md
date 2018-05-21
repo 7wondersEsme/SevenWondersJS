@@ -21,24 +21,24 @@ This is a game for 2 players. You will lead a city and create armies to attack e
 To install the game, you need node install on your system.
 Then, you need to clone the repository and install the dependencies.
 
-	```bash
-	git clone https://github.com/7wondersEsme/SevenWondersJS
-	cd SevenWondersJS
-	yarn install
-	```
+```bash
+git clone https://github.com/7wondersEsme/SevenWondersJS
+cd SevenWondersJS
+yarn install
+```
 
 ## Launch the game
 
 Just run the game.js script to play the game with your mate!
 
-	```bash
-	yarn game
-	```
+```bash
+yarn game
+```
 or
 
-	```
+```bash
 	node game.js
-	```
+```
 
 ## Game play
 ### Actions
