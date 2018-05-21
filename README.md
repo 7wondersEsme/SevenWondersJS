@@ -5,9 +5,16 @@ You are a the leader of an ancient city, and you need to ensure your supremacy a
 This is a game for 2 players. You will lead a city and create armies to attack each other.
 
 ## Content
-[Installation](https://github.com/7wondersEsme/SevenWondersJS#content)
-[Launch the game](#launch-the-game)
-[Game play](#game-play)
+* [Installation](#installation)
+* [Launch the game](#launch-the-game)
+* [Game play](#game-play)
+  * [Actions](#actions)
+  * [Create army](#create-army)
+  * [Send trader with gold](#send-trader-with-gold)
+  * [Send trader with corn](#send-trader-with-corn)
+  * [Offer gold](#offer-gold)
+  * [Offer corn](#offer-corn)
+  * [Attack](#attack)
 
 ## Installation
 
