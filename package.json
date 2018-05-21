@@ -5,6 +5,9 @@
     "mocha": "^5.2.0",
     "xo": "^0.21.1"
   },
+  "scripts": {
+    "game": "node game.js"
+  },
   "xo": {
     "envs": [
       "node",

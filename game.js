@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const {Player} = require('./player');
-const {Input} = require('./input');
+const {Player} = require('./app/player');
+const {Input} = require('./app/input');
 
 function play(player, other, action) {
   switch (action) {
@@ -52,18 +52,23 @@ function tour(input, p1, p2) {
 }
 
 async function game() {
-  const p1 = new Player('p1', 1000);
-  const p2 = new Player('p2', 1000);
+  const p1 = new Player('1', 1000);
+  const p2 = new Player('2', 1000);
   const input = new Input();
   p1.worldEvents.on('lost', () => {
-    console.log('Player 2 won!');
+    console.log('-------------------');
+    console.log('|  Player 2 won!  |');
+    console.log('-------------------');
+
     p1.endWorld();
     p2.endWorld();
     input.close();
     process.exit(0);
   });
   p2.worldEvents.on('lost', () => {
-    console.log('Player 1 won!');
+    console.log('-------------------');
+    console.log('|  Player 1 won!  |');
+    console.log('-------------------');
     p1.endWorld();
     p2.endWorld();
     input.close();

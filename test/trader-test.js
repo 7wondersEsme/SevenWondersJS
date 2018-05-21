@@ -1,6 +1,6 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
-const {Trader} = require('../trader');
+const {Trader} = require('../app/trader');
 
 chai.use(chaiAsPromised);
 chai.should();

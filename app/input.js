@@ -28,9 +28,10 @@ class Input {
       };
       timeout = setTimeout(() => {
         this.rl_.removeListener('line', handleAnswer);
+        console.log('Your turn is over');
         resolve();
       }, 15000);
-      console.log('----- ' + player.name + ' ------');
+      console.log('\n\n\n----- Player ' + player.name + ' ------');
       const stats = player.stats();
       for (const s in stats) {
         if (Object.prototype.hasOwnProperty.call(stats, s)) {

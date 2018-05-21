@@ -1,6 +1,6 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
-const {Soldier} = require('../soldier');
+const {Soldier} = require('../app/soldier');
 
 chai.use(chaiAsPromised);
 chai.should();

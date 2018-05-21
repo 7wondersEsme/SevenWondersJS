@@ -1,6 +1,6 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
-const {Player} = require('../player');
+const {Player} = require('../app/player');
 
 chai.use(chaiAsPromised);
 chai.should();
