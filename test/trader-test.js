@@ -24,11 +24,11 @@ describe('trader.js', () => {
       t = new Trader('test', 100, 'gold', 1);
     });
 
-    it('should change 100 corn to 110 gold', async () => {
+    it('should change 100 corn to 200 gold', async () => {
       t.taken.should.be.equal(100);
       await t.trade(1, 0);
       t.taken.should.be.equal(0);
-      t.given.should.be.equal(110);
+      t.given.should.be.equal(200);
     });
 
     it('should emit event', async () => {
@@ -36,12 +36,12 @@ describe('trader.js', () => {
       t.trade(1, 0);
       await new Promise(resolve => {
         t.worldEvents.on('trade', r => {
-          r.amount.should.be.equal(110);
+          r.amount.should.be.equal(200);
           resolve();
         });
       });
       t.taken.should.be.equal(0);
-      t.given.should.be.equal(110);
+      t.given.should.be.equal(200);
     });
 
     it('should be attacked', async () => {

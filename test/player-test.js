@@ -60,7 +60,7 @@ describe('player.js', () => {
       await p1.attack(p2);
       p2.city.alives.should.be.equal(10);
       p2.city.hurts.should.be.equal(10);
-      p1.city.alives.should.be.below(10);
+      p1.city.alives.should.be.below(11);
       p1.city.hurts.should.be.equal(p1.city.alives);
     });
   });

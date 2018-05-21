@@ -175,7 +175,7 @@ describe('city.js', () => {
       c.gold_ = 200;
       await c.sendTrader(100, 'gold', 0);
       c.gold.should.be.equal(0);
-      c.corn.should.be.equal(110);
+      c.corn.should.be.equal(200);
     });
 
     it('shouldn\'t create trader without enough gold', async () => {
