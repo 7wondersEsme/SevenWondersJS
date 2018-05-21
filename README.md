@@ -37,7 +37,7 @@ yarn game
 or
 
 ```bash
-	node game.js
+node game.js
 ```
 
 ## Game play
