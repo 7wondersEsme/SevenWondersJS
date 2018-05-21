@@ -12,7 +12,7 @@ class Trader {
   trade(protection, ennemies) {
     return new Promise(resolve => {
       setTimeout(() => {
-        this.given_ = Math.floor(this.taken_ * 1.1);
+        this.given_ = this.taken_ * 2;
         this.taken_ = 0;
         if (Math.random() < ennemies / (1 + (100 * protection))) {
           this.given_ = 0;
